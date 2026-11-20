@@ -1,0 +1,521 @@
+/* KIM companion — mặt hologram 3D-style (SVG + CSS 3D, không WebGL).
+   Scope toàn bộ bằng tiền tố .kim- để không đụng token/layout của app. */
+
+.kim-companion {
+  --kim-size: 36px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--kim-size);
+  height: var(--kim-size);
+  flex: none;
+  box-sizing: border-box;
+  vertical-align: middle;
+  perspective: calc(var(--kim-size) * 9);
+  contain: layout style;
+  isolation: isolate;
+}
+
+/* ── Quầng sáng nền ─────────────────────────────────────────────────── */
+.kim-companion__halo {
+  position: absolute;
+  inset: -16%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 42% 36%, rgba(250, 166, 52, 0.42) 0%, rgba(250, 166, 52, 0.12) 40%, transparent 68%),
+    radial-gradient(circle at 62% 70%, rgba(94, 230, 240, 0.24) 0%, transparent 62%);
+  filter: blur(calc(var(--kim-size) * 0.07));
+  animation: kim-glow 4.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Vành quỹ đạo hologram (3D tilt) */
+.kim-companion__ring {
+  position: absolute;
+  inset: 3%;
+  border-radius: 50%;
+  border: 1px solid rgba(120, 235, 250, 0.45);
+  box-shadow:
+    0 0 calc(var(--kim-size) * 0.14) rgba(94, 230, 240, 0.32),
+    inset 0 0 calc(var(--kim-size) * 0.1) rgba(250, 166, 52, 0.28);
+  transform: rotateX(62deg);
+  animation: kim-orbit 11s linear infinite;
+  pointer-events: none;
+}
+
+/* ── Mặt ────────────────────────────────────────────────────────────── */
+.kim-companion__face {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform-style: preserve-3d;
+  transform: rotateX(4deg) rotateY(-7deg) translateZ(1px);
+  animation: kim-bob 5.4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.kim-companion__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.kim-companion__aura {
+  opacity: 0.9;
+}
+
+.kim-companion__head {
+  filter: drop-shadow(0 0 calc(var(--kim-size) * 0.06) rgba(250, 166, 52, 0.5))
+    drop-shadow(0 0 calc(var(--kim-size) * 0.12) rgba(94, 230, 240, 0.22));
+}
+
+.kim-companion__circuit {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: kim-spin 22s linear infinite;
+  opacity: 0.8;
+}
+
+.kim-companion__circuit--slow {
+  animation-duration: 34s;
+  animation-direction: reverse;
+  opacity: 0.55;
+}
+
+.kim-companion__antenna {
+  fill: var(--color-amber, #faa634);
+  filter: drop-shadow(0 0 calc(var(--kim-size) * 0.08) rgba(250, 166, 52, 0.9));
+  animation: kim-antenna 3.6s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.kim-companion__scan {
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+  /* Chỉ bật scanline khi mặt đủ lớn (>=48px) để mặt 28/34px không bị nhiễu. */
+  display: none;
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 38%,
+      rgba(150, 245, 255, 0.26) 48%,
+      rgba(150, 245, 255, 0.4) 50%,
+      rgba(150, 245, 255, 0.26) 52%,
+      transparent 62%
+    ),
+    repeating-linear-gradient(to bottom, rgba(150, 245, 255, 0.07) 0 1px, transparent 1px 4px);
+  background-size: 100% 220%, 100% 4px;
+  background-position: 0 -110%, 0 0;
+  -webkit-mask-image: radial-gradient(circle, #000 55%, transparent 78%);
+  mask-image: radial-gradient(circle, #000 55%, transparent 78%);
+  animation: kim-scanline 3.2s linear infinite;
+  opacity: 0.5;
+  mix-blend-mode: screen;
+}
+
+.kim-companion {
+  container-type: inline-size;
+}
+
+@container (min-width: 48px) {
+  .kim-companion__scan {
+    display: block;
+  }
+}
+
+/* ── Mắt: mí nháy + đồng tử nhìn nhẹ ─────────────────────────────────── */
+.kim-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: kim-blink 5.6s infinite;
+}
+
+.kim-eye--right {
+  animation-delay: 0.09s;
+}
+
+.kim-eye__white {
+  fill: rgba(206, 246, 255, 0.92);
+}
+
+.kim-eye__iris {
+  fill: #ffc35e;
+}
+
+.kim-eye__pupil {
+  fill: #071233;
+}
+
+.kim-eye__glint {
+  fill: #ffffff;
+  opacity: 0.92;
+}
+
+.kim-eye__look {
+  animation: kim-look 6.4s ease-in-out infinite;
+}
+
+.kim-companion[data-mood="thinking"] .kim-eye__look {
+  animation-duration: 9s;
+}
+
+/* ── Lông mày theo mood ──────────────────────────────────────────────── */
+.kim-brow {
+  fill: none;
+  stroke: rgba(226, 241, 255, 0.66);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.35s ease, stroke 0.35s ease;
+}
+
+.kim-companion[data-mood="thinking"] .kim-brow--left {
+  transform: translateY(0.6px) rotate(11deg);
+}
+
+.kim-companion[data-mood="thinking"] .kim-brow--right {
+  transform: translateY(-0.9px) rotate(-9deg);
+}
+
+.kim-companion[data-mood="curious"] .kim-brow--right {
+  transform: translateY(-1.9px) rotate(-8deg);
+}
+
+.kim-companion[data-mood="happy"] .kim-brow--left,
+.kim-companion[data-mood="happy"] .kim-brow--right {
+  transform: translateY(-0.8px);
+  stroke: rgba(255, 216, 160, 0.9);
+}
+
+/* ── Miệng ───────────────────────────────────────────────────────────── */
+.kim-mouth__closed {
+  fill: none;
+  stroke: #ffe0a0;
+  stroke-width: 2.3;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 1.5px rgba(250, 166, 52, 0.65));
+}
+
+.kim-companion[data-mood="happy"] .kim-mouth__closed {
+  stroke: #ffd06a;
+  stroke-width: 2.6;
+}
+
+.kim-mouth__open {
+  display: none;
+  fill: #ff9a72;
+  stroke: #ffd08a;
+  stroke-width: 1.2;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.kim-companion[data-speaking="true"] .kim-mouth__closed {
+  display: none;
+}
+
+.kim-companion[data-speaking="true"] .kim-mouth__open {
+  display: block;
+  animation: kim-talk 0.26s steps(2, end) infinite;
+}
+
+.kim-companion[data-mood="happy"][data-speaking="true"] .kim-mouth__open {
+  transform: scale(1.15, 1.28);
+}
+
+/* ── Má ửng ──────────────────────────────────────────────────────────── */
+.kim-cheek {
+  fill: rgba(250, 166, 52, 0.5);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  filter: blur(1px);
+}
+
+.kim-companion[data-mood="happy"] .kim-cheek {
+  opacity: 0.62;
+}
+
+/* ── 3D bob / tilt ───────────────────────────────────────────────────── */
+@keyframes kim-bob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotateX(4deg) rotateY(-7deg);
+  }
+  50% {
+    transform: translate3d(0, -4%, 0) rotateX(2deg) rotateY(-3deg);
+  }
+}
+
+@keyframes kim-bob-tilt {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotateX(3deg) rotateY(-8deg) rotateZ(-2deg);
+  }
+  50% {
+    transform: translate3d(0, -3%, 0) rotateX(2deg) rotateY(-2deg) rotateZ(2.5deg);
+  }
+}
+
+.kim-companion[data-mood="curious"] .kim-companion__face {
+  animation-name: kim-bob-tilt;
+  animation-duration: 6.2s;
+}
+
+.kim-companion[data-mood="happy"] .kim-companion__face {
+  animation-duration: 3.9s;
+}
+
+.kim-companion[data-mood="thinking"] .kim-companion__face {
+  animation-duration: 7.2s;
+}
+
+/* ── Glow / hud animations ───────────────────────────────────────────── */
+@keyframes kim-glow {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes kim-orbit {
+  from {
+    transform: rotateX(62deg) rotateZ(0deg);
+  }
+  to {
+    transform: rotateX(62deg) rotateZ(360deg);
+  }
+}
+
+@keyframes kim-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes kim-scanline {
+  from {
+    background-position: 0 -110%, 0 0;
+  }
+  to {
+    background-position: 0 110%, 0 0;
+  }
+}
+
+@keyframes kim-antenna {
+  0%,
+  100% {
+    opacity: 0.82;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes kim-blink {
+  0%,
+  90%,
+  100% {
+    transform: scaleY(1);
+  }
+  92.5%,
+  94.5% {
+    transform: scaleY(0.08);
+  }
+}
+
+@keyframes kim-look {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  24% {
+    transform: translateX(0.8px);
+  }
+  52% {
+    transform: translateX(-0.5px);
+  }
+  74% {
+    transform: translateX(0.5px);
+  }
+}
+
+@keyframes kim-talk {
+  0%,
+  100% {
+    transform: scaleY(0.55);
+  }
+  50% {
+    transform: scaleY(1.18);
+  }
+}
+
+/* ── Speech bubble ───────────────────────────────────────────────────── */
+.kim-speech {
+  --kim-speech-size: 52px;
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(8px, calc(var(--kim-speech-size) * 0.18), 14px);
+  width: 100%;
+  min-width: 0;
+}
+
+.kim-speech__bubble {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  padding: 9px 13px 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background:
+    linear-gradient(155deg, rgba(18, 42, 122, 0.7) 0%, rgba(7, 18, 54, 0.86) 58%, rgba(5, 10, 36, 0.9) 100%);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 0 0 1px rgba(94, 230, 240, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+.kim-speech__bubble::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 15px;
+  width: 9px;
+  height: 9px;
+  transform: rotate(45deg);
+  border-left: 1px solid rgba(255, 255, 255, 0.13);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+  background: rgba(12, 30, 84, 0.85);
+  border-bottom-left-radius: 2px;
+}
+
+.kim-speech__label {
+  display: block;
+  margin-bottom: 1px;
+  font-size: 9.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.22em;
+  color: var(--color-amber, #faa634);
+  text-transform: uppercase;
+}
+
+.kim-speech__text {
+  margin: 0;
+  color: var(--color-silver, #f4f6fb);
+  font-size: 13.5px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.kim-speech__text > span[aria-hidden="true"] {
+  /* giữ chiều cao ổn định khi chữ chạy để bubble không nhảy */
+  white-space: pre-wrap;
+}
+
+.kim-speech__caret {
+  display: inline-block;
+  width: 2px;
+  height: 0.95em;
+  margin-left: 2px;
+  vertical-align: -0.12em;
+  border-radius: 2px;
+  background: var(--color-amber, #faa634);
+  animation: kim-caret 0.9s step-end infinite;
+}
+
+@keyframes kim-caret {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ── Accessibility ───────────────────────────────────────────────────── */
+.kim-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Giảm chuyển động / thiết bị yếu ─────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .kim-companion__halo,
+  .kim-companion__ring,
+  .kim-companion__scan,
+  .kim-companion__circuit,
+  .kim-companion__antenna,
+  .kim-companion__face,
+  .kim-eye__look,
+  .kim-speech__caret {
+    animation: none !important;
+  }
+
+  .kim-companion__face {
+    transform: rotateX(3deg) rotateY(-5deg);
+  }
+
+  .kim-companion__scan {
+    display: none;
+  }
+
+  /* vẫn nháy mắt nhẹ */
+  .kim-eye {
+    animation: kim-blink 7.5s infinite !important;
+  }
+
+  .kim-companion[data-speaking="true"] .kim-mouth__open {
+    animation: none !important;
+    transform: scaleY(0.9);
+  }
+}
+
+/* Tier yếu do SceneCanvas/app shell bật: tắt bob/scan nhưng vẫn còn nháy mắt */
+.tier-low .kim-companion__face,
+.tier-low .kim-companion__halo,
+.tier-low .kim-companion__ring,
+.tier-low .kim-companion__circuit,
+.tier-low .kim-companion__antenna {
+  animation: none !important;
+}
+
+.tier-low .kim-companion__scan {
+  display: none;
+}
+
+.tier-low .kim-companion__face {
+  transform: rotateX(2deg) rotateY(-4deg);
+}
+
+.tier-low .kim-speech__bubble {
+  backdrop-filter: none;
+}

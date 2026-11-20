@@ -1,0 +1,25 @@
+// Copy sang src/ui/game-dock.tsx. CTA luôn nằm ngoài vùng cuộn.
+import { createContext, useContext, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+
+interface DockContextValue {
+  target: HTMLElement | null;
+  setTarget: (node: HTMLElement | null) => void;
+}
+
+const DockContext = createContext<DockContextValue | null>(null);
+
+export function GameDockProvider({ children }: { children: ReactNode }) {
+  const [target, setTarget] = useState<HTMLElement | null>(null);
+  return <DockContext.Provider value={{ target, setTarget }}>{children}</DockContext.Provider>;
+}
+
+export function GameDockSlot({ testId = "game-dock" }: { testId?: string }) {
+  const ctx = useContext(DockContext);
+  return <div ref={ctx?.setTarget} className="game-dock" data-testid={testId} />;
+}
+
+export function GameDock({ children }: { children: ReactNode }) {
+  const ctx = useContext(DockContext);
+  return ctx?.target ? createPortal(children, ctx.target) : null;
+}

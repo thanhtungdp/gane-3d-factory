@@ -1,0 +1,13 @@
+import { expect, test } from "@playwright/test";
+
+test("CTA chính thấy trong 3 giây đầu, không cần scroll", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 640 });
+  await page.goto("/?intro=0");
+  const cta = page.locator('[data-testid="game-dock"] [data-testid="continue"]').first();
+  await expect(cta).toBeVisible({ timeout: 3_000 });
+
+  const before = await page.evaluate(() => document.scrollingElement?.scrollTop ?? 0);
+  expect(before).toBe(0);
+  const box = await cta.boundingBox();
+  expect(box!.y + box!.height).toBeLessThanOrEqual(641);
+});

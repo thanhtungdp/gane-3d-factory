@@ -1,0 +1,166 @@
+/* CSS phạm vi gameplay. Token màu/layout chính vẫn lấy từ src/styles/app.css. */
+.kim-game :where(button, [role="button"], a):focus-visible {
+  outline: 2px solid var(--color-amber, #faa634);
+  outline-offset: 2px;
+}
+
+.kim-game :where(button)[disabled] {
+  opacity: 0.55;
+}
+
+.kim-game :where(canvas) {
+  image-rendering: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kim-game .float {
+    animation: none !important;
+  }
+}
+
+/* ── S: ô sương thật (gradient lớp + blob trôi + blur) ─────────────────── */
+.scan-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  height: clamp(200px, 39dvh, 340px);
+  min-height: 0;
+}
+.scan-cell__title { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.scan-cell__evidence { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.scan-cell__hint { line-height: 1.2; }
+.scan-cell {
+  display: block;
+  width: 100%;
+  color: var(--ink, #f4f6fb);
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.scan-cell:disabled { cursor: default; }
+.scan-cell__fog {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 100% at 18% 12%, rgba(176, 203, 235, 0.24), transparent 56%),
+    radial-gradient(90% 80% at 82% 84%, rgba(128, 158, 208, 0.2), transparent 62%),
+    linear-gradient(158deg, rgba(22, 35, 80, 0.94), rgba(6, 12, 32, 0.97));
+  backdrop-filter: blur(10px) saturate(0.8);
+  -webkit-backdrop-filter: blur(10px) saturate(0.8);
+  transition: opacity 0.45s ease, filter 0.45s ease;
+}
+.scan-blob {
+  position: absolute;
+  display: block;
+  border-radius: 999px;
+  filter: blur(14px);
+  background: rgba(196, 220, 248, 0.18);
+  animation: kimFogDrift 9s ease-in-out infinite alternate;
+}
+.scan-blob--1 { width: 72%; height: 62%; left: -12%; top: -14%; animation-duration: 8s; }
+.scan-blob--2 { width: 58%; height: 52%; right: -8%; bottom: -10%; animation-duration: 11s; animation-delay: -3s; }
+.scan-blob--3 { width: 40%; height: 36%; left: 32%; top: 34%; animation-duration: 7s; animation-delay: -1.5s; opacity: 0.7; }
+.scan-cell--marked { border-color: rgba(250, 166, 52, 0.55); box-shadow: inset 0 0 0 1px rgba(250, 166, 52, 0.3); }
+.scan-cell--marked .scan-cell__fog { opacity: 0.72; }
+.scan-cell--dissolving .scan-cell__fog { animation: kimFogDissolve 0.28s ease-out both; }
+.scan-cell--open .scan-cell__fog { opacity: 0; }
+.scan-cell--closed .scan-cell__content { opacity: 0.3; filter: blur(5px); }
+.scan-cell__zone { flex: none; }
+.scan-cell--open .scan-cell__content { opacity: 1; filter: none; }
+.scan-cell__content { transition: opacity 0.35s ease, filter 0.35s ease; }
+.tier-low .scan-cell__fog {
+  background: #0a1230;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.tier-low .scan-blob { display: none; }
+
+@keyframes kimFogDrift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(12%, -8%, 0) scale(1.08); }
+}
+@keyframes kimFogDissolve {
+  from { opacity: 1; filter: blur(0); transform: scale(1); }
+  to { opacity: 0; filter: blur(16px); transform: scale(1.04); }
+}
+
+/* ── A: node chòm sao + bản đồ định vị ─────────────────────────────────── */
+.align-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink-dim, #c9d2e6);
+  cursor: pointer;
+}
+.align-node__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: radial-gradient(circle at 38% 32%, rgba(255, 255, 255, 0.14), rgba(5, 10, 36, 0.9));
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+.align-node__label {
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--ink-muted, #8e9bb8);
+}
+.align-node--next .align-node__icon {
+  border-color: rgba(250, 166, 52, 0.5);
+  animation: pulseSoft 2.2s ease-in-out infinite;
+}
+.align-node--lit .align-node__icon {
+  border-color: rgba(250, 166, 52, 0.8);
+  background: radial-gradient(circle at 38% 32%, rgba(250, 166, 52, 0.4), rgba(12, 18, 44, 0.95));
+  box-shadow: 0 0 24px rgba(250, 166, 52, 0.35);
+}
+.align-node--lit .align-node__label { color: #ffd79b; }
+.align-map { touch-action: none; cursor: crosshair; }
+.align-map__token { pointer-events: none; }
+
+/* ── K: dải 5 slot ngắn ────────────────────────────────────────────────── */
+.launch-slot {
+  display: flex;
+  min-height: 44px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 4px 2px;
+  border-radius: 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--ink-muted, #8e9bb8);
+  cursor: default;
+}
+.launch-slot--filled {
+  border-style: solid;
+  border-color: rgba(250, 166, 52, 0.4);
+  background: rgba(250, 166, 52, 0.1);
+  color: var(--ink, #f4f6fb);
+  cursor: pointer;
+}
+
+@media (max-width: 359px) {
+  .scan-cell__content { padding: 8px; }
+  .scan-cell__title { font-size: 12.5px; line-height: 1.25; }
+  .scan-cell__evidence { font-size: 10.5px; line-height: 1.35; }
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .scan-blob { animation: none; }
+  .align-node--next .align-node__icon { animation: none; }
+}

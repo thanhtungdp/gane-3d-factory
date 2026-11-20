@@ -1,0 +1,72 @@
+// Copy sang src/game/one-question-sheet.tsx. Generic.
+import type { ReactNode } from "react";
+
+export interface AnswerOption {
+  id: string;
+  label: string;
+}
+
+export function OneQuestionSheet({
+  open,
+  index,
+  total,
+  prompt,
+  options,
+  answeredOptionId,
+  feedback,
+  onChoose,
+  onContinue,
+  onHide,
+  footer,
+}: {
+  open: boolean;
+  index: number;
+  total: number;
+  prompt: string;
+  options: AnswerOption[];
+  answeredOptionId?: string;
+  feedback?: ReactNode;
+  onChoose: (id: string) => void;
+  onContinue: () => void;
+  onHide: () => void;
+  footer?: ReactNode;
+}) {
+  if (!open) return null;
+  const answered = Boolean(answeredOptionId);
+
+  return (
+    <div className="sheet-overlay" role="dialog" aria-modal="true" data-testid="question-modal">
+      <div className="sheet">
+        <header className="sheet__header">
+          <p className="eyebrow">Câu {index}/{total}</p>
+          <button type="button" onClick={onHide} aria-label="Ẩn câu hỏi">Ẩn</button>
+        </header>
+        <h2 className="sheet__title">{prompt}</h2>
+        <div className="sheet__body">
+          {!answered ? (
+            <div role="group" aria-label="Chọn một đáp án">
+              {options.map((option, i) => (
+                <button key={option.id} type="button" className="answer" onClick={() => onChoose(option.id)}>
+                  <span aria-hidden="true">{String.fromCharCode(65 + i)}</span>
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="feedback">{feedback}</div>
+          )}
+        </div>
+        <footer className="sheet__footer">
+          {footer}
+          {answered ? (
+            <button type="button" className="btn primary" onClick={onContinue} data-testid="question-continue">
+              Tiếp tục
+            </button>
+          ) : (
+            <span className="muted">Chọn một đáp án</span>
+          )}
+        </footer>
+      </div>
+    </div>
+  );
+}

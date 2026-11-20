@@ -1,0 +1,17 @@
+node_modules/
+dist/
+dist-server/
+.data/
+.data-prod/
+.vite/
+coverage/
+playwright-report/
+test-results/
+shots/
+*.log
+.DS_Store
+
+# env files (secrets) — only the example template is tracked
+.env
+.env.*
+!.env.example

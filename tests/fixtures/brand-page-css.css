@@ -1,0 +1,16 @@
+:root {
+  --brand: #0a6e3d;
+  --accent: #f4a261;
+  --ink: #16211a;
+  --paper: #f7f5f0;
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Be Vietnam Pro", sans-serif;
+}
+.brand-accent { color: var(--accent); }
+.site-header { display: flex; gap: 24px; padding: 16px; }
+@media (max-width: 768px) {
+  .site-header { padding: 8px; flex-wrap: wrap; }
+}

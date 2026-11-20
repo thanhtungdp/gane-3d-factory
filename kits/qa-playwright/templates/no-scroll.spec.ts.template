@@ -1,0 +1,15 @@
+import { expect, test } from "@playwright/test";
+
+test("chỉ một vùng cuộn, CTA ngoài vùng cuộn", async ({ page }) => {
+  await page.goto("/?intro=0");
+  const result = await page.evaluate(() => {
+    const scrollers = [...document.querySelectorAll<HTMLElement>(".game-body, [data-scroll]")];
+    const cta = document.querySelector<HTMLElement>('[data-testid="game-dock"] [data-testid="continue"]');
+    return {
+      scrollerCount: scrollers.length,
+      ctaInsideScroller: scrollers.some((node) => Boolean(cta && node.contains(cta))),
+    };
+  });
+  expect(result.scrollerCount).toBeLessThanOrEqual(1);
+  expect(result.ctaInsideScroller).toBe(false);
+});

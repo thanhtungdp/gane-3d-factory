@@ -1,0 +1,48 @@
+// Copy sang src/app/audio-director.tsx. Thay AudioPort bằng engine thật.
+import { useEffect } from "react";
+
+export type Cue = "ambience" | "ui" | "confirm" | "reward" | "progress" | "typing" | "error" | "silence";
+
+export interface AudioPort {
+  setEnabled(on: boolean): void;
+  setCue(cue: Cue | null): void;
+  isReady(): boolean;
+}
+
+export function AudioDirector({
+  audio,
+  enabled,
+  cue,
+  userActivated,
+}: {
+  audio: AudioPort;
+  enabled: boolean;
+  cue: Cue | null;
+  userActivated: boolean;
+}) {
+  useEffect(() => {
+    audio.setCue(cue);
+    if (!enabled) {
+      audio.setEnabled(false);
+      return;
+    }
+    if (audio.isReady() || userActivated) {
+      audio.setEnabled(true);
+      return;
+    }
+    const unlock = () => {
+      audio.setEnabled(true);
+      audio.setCue(cue);
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("keydown", unlock);
+    };
+    window.addEventListener("pointerdown", unlock, { passive: true });
+    window.addEventListener("keydown", unlock);
+    return () => {
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("keydown", unlock);
+    };
+  }, [audio, enabled, cue, userActivated]);
+
+  return null;
+}

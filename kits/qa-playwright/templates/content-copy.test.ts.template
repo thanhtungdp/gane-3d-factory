@@ -1,0 +1,22 @@
+import { describe, expect, it } from "vitest";
+// Đổi import theo schema nội dung của dự án mới.
+import { ALL_DECISIONS } from "@/content";
+
+describe("content copy gates", () => {
+  it("prompt rõ, option cân, không meta-answer", () => {
+    for (const decision of ALL_DECISIONS) {
+      expect(decision.prompt.length).toBeLessThanOrEqual(85);
+      expect(decision.prompt.endsWith("?")).toBe(true);
+      expect(decision.prompt.toLowerCase()).not.toContain("đúng nhất");
+      expect(decision.options).toHaveLength(3);
+
+      const lengths = decision.options.map((option) => option.label.length);
+      expect(Math.max(...lengths)).toBeLessThanOrEqual(120);
+      expect(Math.max(...lengths) - Math.min(...lengths)).toBeLessThanOrEqual(55);
+      for (const option of decision.options) {
+        expect(option.label).not.toMatch(/\[|\]/);
+        expect(option.label).not.toContain("%");
+      }
+    }
+  });
+});

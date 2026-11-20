@@ -1,0 +1,17 @@
+node_modules
+.data
+.vite
+dist
+coverage
+shots
+test-results
+playwright-report
+.git
+.gitignore
+*.log
+.env
+.env.*
+docs/assets
+.dsh
+kits
+playbooks

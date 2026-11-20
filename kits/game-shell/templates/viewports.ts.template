@@ -1,0 +1,19 @@
+// Copy sang src/lib/viewports.ts. Generic breakpoints.
+export const VIEWPORTS = {
+  compact: "(max-width: 699px)",
+  fold: "(min-width: 700px) and (max-width: 899px)",
+  console: "(min-width: 900px) and (min-height: 640px)",
+  desktop: "(min-width: 1200px)",
+  shortLandscape: "(min-width: 700px) and (max-height: 639px)",
+  wide: "(min-width: 1600px)",
+} as const;
+
+export type ViewportTier = "compact" | "fold" | "console" | "desktop" | "wide";
+
+export function tierFor(width: number, height: number): ViewportTier {
+  if (width >= 1600) return "wide";
+  if (width >= 1200) return "desktop";
+  if (width >= 900 && height >= 640) return "console";
+  if (width >= 700) return "fold";
+  return "compact";
+}

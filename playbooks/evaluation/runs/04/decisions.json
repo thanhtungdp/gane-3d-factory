@@ -1,0 +1,168 @@
+{
+  "game": "Ca đầu tiên · Bánh mì Hạnh",
+  "brand": "Bánh mì Hạnh (hư cấu, 12 cửa hàng — số liệu ví dụ)",
+  "rules": { "promptMax": 85, "optionMin": 20, "optionMax": 120, "spreadMax": 55 },
+  "decisions": [
+    {
+      "id": "act-1-nhan-ca/d1-uniform",
+      "actId": "act-1-nhan-ca",
+      "kind": "action",
+      "prompt": "Đồng phục thiếu phù hiệu trước giờ mở cửa, bạn xử lý thế nào?",
+      "options": [
+        { "id": "a", "points": 2, "label": "Lấy phù hiệu dự phòng theo checklist và ghi vào sổ ca.", "feedback": "Ca mở đúng chuẩn nhận diện; sổ ca có dòng để ca sau đối chiếu." },
+        { "id": "b", "points": 1, "label": "Mở cửa trước, xin phù hiệu khi đã có khách vào.", "feedback": "Khách đầu tiên thấy nhân viên chưa đủ nhận diện; ca sau không biết vì sao thiếu." },
+        { "id": "c", "points": 0, "label": "Mặc áo khác và không ghi gì vào sổ ca.", "feedback": "Cửa hàng lệch chuẩn nhận diện mà không ai có dữ liệu để sửa." }
+      ],
+      "explain": "Nhận diện là bước kiểm trước khi mở cửa; thiếu thì bổ sung theo checklist rồi ghi lại, không tự bỏ qua.",
+      "evidenceKey": "brand-vi"
+    },
+    {
+      "id": "act-1-nhan-ca/d2-sign",
+      "actId": "act-1-nhan-ca",
+      "kind": "diagnosis",
+      "prompt": "Bảng hiệu bị lệch trước giờ mở cửa, bạn làm gì?",
+      "options": [
+        { "id": "a", "points": 2, "label": "Chụp ảnh, báo quản lý ca và ghi sự cố trước khi mở.", "feedback": "Sự cố có ảnh và người nhận; quản lý ca quyết định sửa trong ngày." },
+        { "id": "b", "points": 1, "label": "Tự nắn lại bảng hiệu rồi mở cửa như thường.", "feedback": "Bảng có thể tạm thẳng nhưng không ai biết mối nối đã hỏng." },
+        { "id": "c", "points": 0, "label": "Mở cửa bình thường và để ca sau xử lý.", "feedback": "Khách thấy bảng lệch suốt ca; ca sau nhận việc không có ghi chú." }
+      ],
+      "explain": "Sự cố nhận diện cần ảnh và người chịu trách nhiệm; nhân viên mới ghi nhận, không tự sửa.",
+      "evidenceKey": "checklist-open"
+    },
+    {
+      "id": "act-1-nhan-ca/d3-pos",
+      "actId": "act-1-nhan-ca",
+      "kind": "action",
+      "prompt": "Máy POS chưa lên sau khi bật, bạn làm gì?",
+      "options": [
+        { "id": "a", "points": 2, "label": "Kiểm tra nguồn và dây theo checklist rồi báo quản lý ca.", "feedback": "Lỗi được khoanh vùng trong vài phút; quản lý ca có thông tin để gọi hỗ trợ." },
+        { "id": "b", "points": 1, "label": "Bật lại nhiều lần và chờ thêm trước khi báo.", "feedback": "Giờ mở cửa bị trễ; không ai biết máy đã lỗi từ lúc nào." },
+        { "id": "c", "points": 0, "label": "Ghi đơn bằng tay và bỏ qua bước kiểm POS.", "feedback": "Đơn không vào hệ thống, cuối ca phải dò lại tay và dễ lệch doanh thu." }
+      ],
+      "explain": "Checklist mở ca là ranh giới giữa 'chưa lên' và 'đã hỏng'; vượt bước kiểm là mất dấu lỗi.",
+      "evidenceKey": "checklist-open"
+    },
+    {
+      "id": "act-2-mo-cua/d4-approve",
+      "actId": "act-2-mo-cua",
+      "kind": "knowledge",
+      "prompt": "Trước khi đăng bài khuyến mãi, bước nào là bắt buộc?",
+      "options": [
+        { "id": "a", "points": 2, "label": "Lấy duyệt của người có thẩm quyền theo quy trình nội dung.", "feedback": "Bài lên đúng người duyệt; nếu sai sót, có đầu mối để sửa." },
+        { "id": "b", "points": 1, "label": "Đăng trước cho kịp giờ rồi báo quản lý ca sau.", "feedback": "Bài đã tiếp cận khách trước khi ai kiểm nội dung." },
+        { "id": "c", "points": 0, "label": "Đăng bằng tài khoản cá nhân cho nhanh và tiện.", "feedback": "Nội dung thương hiệu ra khỏi kênh chính thức, không thu hồi được." }
+      ],
+      "explain": "Nội dung ra ngoài là cam kết của cửa hàng; chỉ người có thẩm quyền chốt, nhân viên không tự chốt.",
+      "evidenceKey": "sop-content-approval"
+    },
+    {
+      "id": "act-2-mo-cua/d5-logo",
+      "actId": "act-2-mo-cua",
+      "kind": "action",
+      "prompt": "Đồng nghiệp mới đăng ảnh có logo sai, bạn làm gì?",
+      "options": [
+        { "id": "a", "points": 2, "label": "Báo quản lý ca, gỡ bài và ghi lại lỗi nhận diện.", "feedback": "Bài sai được gỡ sớm; lỗi vào danh sách để đào tạo lại." },
+        { "id": "b", "points": 1, "label": "Nhắc riêng bạn đó và để bài tiếp tục hiển thị.", "feedback": "Bạn đó biết lỗi nhưng khách vẫn thấy logo sai trên kênh." },
+        { "id": "c", "points": 0, "label": "Tự sửa ảnh rồi đăng lại từ tài khoản của bạn.", "feedback": "Hai bản ảnh cùng tồn tại; không rõ bản nào là bản chuẩn." }
+      ],
+      "explain": "Logo sai là lỗi nhận diện, cần gỡ và ghi nhận; sửa lén tạo thêm bản không kiểm soát.",
+      "evidenceKey": "brand-vi"
+    },
+    {
+      "id": "act-2-mo-cua/d6-price",
+      "actId": "act-2-mo-cua",
+      "kind": "diagnosis",
+      "prompt": "Giá trên bảng khác giá trên POS, bạn xử lý thế nào?",
+      "options": [
+        { "id": "a", "points": 2, "label": "Dừng bán mức giá đó và báo quản lý ca đối chiếu.", "feedback": "Không ai bị thu sai; quản lý ca chốt giá đúng trước khi bán tiếp." },
+        { "id": "b", "points": 1, "label": "Bán theo giá trên bảng vì khách đã nhìn thấy.", "feedback": "Khách không bị sốc giá, nhưng hệ thống ghi nhận một mức khác." },
+        { "id": "c", "points": 0, "label": "Bán theo POS và không nhắc khách về bảng giá.", "feedback": "Khách phát hiện lệch giá tại quầy và mất tin vào bảng giá." }
+      ],
+      "explain": "Chênh giá là sự cố cần người có thẩm quyền chốt; nhân viên dừng bán và báo, không tự chọn một mức.",
+      "evidenceKey": "sop-pricing"
+    },
+    {
+      "id": "act-3-gap-khach/d7-complain",
+      "actId": "act-3-gap-khach",
+      "kind": "action",
+      "prompt": "Khách phàn nàn món không đúng mô tả, bạn mở lời thế nào?",
+      "options": [
+        { "id": "a", "points": 2, "label": "Xin lỗi, ghi nhận cụ thể và nêu bước xử lý trong quyền.", "feedback": "Khách thấy được lắng nghe và biết ai sẽ làm gì tiếp theo." },
+        { "id": "b", "points": 1, "label": "Giải thích do đông khách và đề nghị khách thông cảm.", "feedback": "Khách hiểu lý do nhưng vẫn chưa biết món của mình được xử lý ra sao." },
+        { "id": "c", "points": 0, "label": "Khẳng định bếp làm đúng và đề nghị khách chọn món khác.", "feedback": "Khách thấy bị phủ nhận; sự việc leo thang trước người khác." }
+      ],
+      "explain": "Phản hồi phải nói điều xảy ra tiếp theo, không phán xét khách và không tự nhận phần ngoài quyền.",
+      "evidenceKey": "sop-customer-response"
+    },
+    {
+      "id": "act-3-gap-khach/d8-discount",
+      "actId": "act-3-gap-khach",
+      "kind": "action",
+      "prompt": "Khách đòi giảm giá ngoài chương trình, bạn trả lời ra sao?",
+      "options": [
+        { "id": "a", "points": 2, "label": "Mời khách dùng ưu đãi đang có và báo quản lý ca nếu cần.", "feedback": "Khách có lựa chọn thật; cửa hàng không tự mở mức giá mới." },
+        { "id": "b", "points": 1, "label": "Giảm một phần nhỏ để giữ khách rồi ghi vào sổ ca.", "feedback": "Khách hài lòng tại chỗ nhưng mức giá không ai có thẩm quyền chốt." },
+        { "id": "c", "points": 0, "label": "Từ chối thẳng và nói giá cửa hàng là cố định.", "feedback": "Khách bị chặn mà không có lựa chọn nào khác để ở lại." }
+      ],
+      "explain": "Nhân viên không có quyền đổi giá; chỉ dẫn về ưu đãi đang có, phần ngoài thì chuyển quản lý ca.",
+      "evidenceKey": "sop-pricing"
+    },
+    {
+      "id": "act-3-gap-khach/d9-video",
+      "actId": "act-3-gap-khach",
+      "kind": "action",
+      "prompt": "Khách quay video trong lúc bạn đang làm việc, bạn làm gì?",
+      "options": [
+        { "id": "a", "points": 2, "label": "Chào, hỏi mục đích và báo quản lý ca theo quy trình.", "feedback": "Cửa hàng biết việc quay đang diễn ra; không ai bị bất ngờ." },
+        { "id": "b", "points": 1, "label": "Đứng ngoài khung hình và tiếp tục làm việc như thường.", "feedback": "Bạn tránh được khung hình nhưng cửa hàng vẫn không biết." },
+        { "id": "c", "points": 0, "label": "Yêu cầu khách tắt máy ngay trước mặt người khác.", "feedback": "Tình huống căng lên và có thể bị ghi lại thành nội dung xấu." }
+      ],
+      "explain": "Nguyên tắc là hỏi mục đích và để quản lý ca xử lý; câu chữ cụ thể của quy trình ghi [cần xác nhận].",
+      "evidenceKey": "sop-customer-response"
+    },
+    {
+      "id": "act-4-dong-ca/d10-handover",
+      "actId": "act-4-dong-ca",
+      "kind": "action",
+      "prompt": "Bàn giao ca, bạn làm theo cách nào?",
+      "options": [
+        { "id": "a", "points": 2, "label": "Đọc checklist bàn giao, ghi việc còn mở và xác nhận.", "feedback": "Ca sau nhận đúng trạng thái; việc còn mở không phụ thuộc trí nhớ." },
+        { "id": "b", "points": 1, "label": "Kể miệng các việc còn lại cho người vào ca.", "feedback": "Ca sau nắm được phần lớn việc nhưng không có bản ghi để đối chiếu." },
+        { "id": "c", "points": 0, "label": "Chỉ ghi sự cố lớn, việc nhỏ để ca sau tự thấy.", "feedback": "Việc nhỏ dồn sang ca sau và dễ thành phàn nàn của khách." }
+      ],
+      "explain": "Bàn giao là bước kiểm cuối ca; checklist giữ được chi tiết mà lời nói làm rơi.",
+      "evidenceKey": "checklist-close"
+    },
+    {
+      "id": "act-4-dong-ca/d11-incident",
+      "actId": "act-4-dong-ca",
+      "kind": "action",
+      "prompt": "Sự cố với khách chưa xử lý xong, bạn ghi ở đâu?",
+      "options": [
+        { "id": "a", "points": 2, "label": "Ghi vào báo cáo sự cố theo mẫu và báo quản lý ca ngay.", "feedback": "Sự cố có người nhận trong ca; khách quay lại thì có hồ sơ." },
+        { "id": "b", "points": 1, "label": "Nhắn tin riêng cho quản lý ca sau khi đã tan ca.", "feedback": "Quản lý ca biết muộn; nếu khách quay lại trước đó thì không ai nắm." },
+        { "id": "c", "points": 0, "label": "Để ca sau tự phát hiện khi khách quay lại.", "feedback": "Khách gặp người không biết sự việc; cửa hàng phải xin lỗi lần hai." }
+      ],
+      "explain": "Sự cố chưa đóng phải vào báo cáo và tới người chịu trách nhiệm trong ca đó, không để trôi.",
+      "evidenceKey": "sop-incident"
+    },
+    {
+      "id": "act-4-dong-ca/d12-unsure",
+      "actId": "act-4-dong-ca",
+      "kind": "knowledge",
+      "prompt": "Khi không chắc một quy định, bạn làm gì?",
+      "options": [
+        { "id": "a", "points": 2, "label": "Tra tài liệu nội bộ trước, không chắc thì hỏi quản lý ca.", "feedback": "Câu trả lời có nguồn; người chơi không tự tạo quy định mới." },
+        { "id": "b", "points": 1, "label": "Làm theo cách bạn từng được hướng dẫn ở nơi khác.", "feedback": "Cách làm có thể đúng ở nơi khác nhưng lệch quy trình cửa hàng này." },
+        { "id": "c", "points": 0, "label": "Tự chọn cách hợp lý nhất để khách không phải chờ.", "feedback": "Quy định thành do suy đoán; cùng câu hỏi sẽ có nhiều đáp án khác nhau." }
+      ],
+      "explain": "Quyền hỏi và quyền dừng là phần của vai trò; làm nhanh không thay được nguồn đúng.",
+      "evidenceKey": "sop-store"
+    }
+  ],
+  "quiz": [
+    { "id": "q1", "prompt": "Việc nào phải xong trước khi mở cửa?", "answer": "Kiểm checklist mở ca", "source": "checklist-open" },
+    { "id": "q2", "prompt": "Ai chốt nội dung đăng lên kênh cửa hàng?", "answer": "Người có thẩm quyền theo quy trình", "source": "sop-content-approval" },
+    { "id": "q3", "prompt": "Sự cố chưa xử lý xong ghi ở đâu?", "answer": "Báo cáo sự cố + báo quản lý ca", "source": "sop-incident" }
+  ]
+}

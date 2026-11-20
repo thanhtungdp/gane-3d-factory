@@ -1,0 +1,21 @@
+[Unit]
+Description=Sao Kim 3D — Hanh trinh Sao Kim (saokim-3d.davidtung.net, port 8789)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=tungphan
+Group=tungphan
+WorkingDirectory=/home/tungphan/apps/game-3d
+EnvironmentFile=/home/tungphan/apps/game-3d/.env.production
+Environment=NODE_ENV=production
+Environment=PATH=/home/tungphan/.nvm/versions/node/v24.19.0/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/home/tungphan/.nvm/versions/node/v24.19.0/bin/node /home/tungphan/apps/game-3d/node_modules/tsx/dist/cli.mjs server/index.ts
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

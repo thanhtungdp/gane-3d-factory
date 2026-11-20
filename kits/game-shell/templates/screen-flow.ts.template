@@ -1,0 +1,52 @@
+// Copy sang src/game/screen-flow.ts. Generic, không gắn brand/story.
+export type GameScreen = "intro" | "landing" | "play" | "result" | "report";
+
+export interface GameFlow {
+  screen: GameScreen;
+  introOpen: boolean;
+  introSeen: boolean;
+  currentActId: string | null;
+  completed: Record<string, number>;
+}
+
+export type GameAction =
+  | { type: "finish-intro" }
+  | { type: "start" }
+  | { type: "open-act"; actId: string }
+  | { type: "complete-act"; actId: string; score: number }
+  | { type: "show-result" }
+  | { type: "open-report" }
+  | { type: "reset" };
+
+export const initialFlow: GameFlow = {
+  screen: "landing",
+  introOpen: false,
+  introSeen: false,
+  currentActId: null,
+  completed: {},
+};
+
+export function flowReducer(state: GameFlow, action: GameAction): GameFlow {
+  switch (action.type) {
+    case "finish-intro":
+      return { ...state, introOpen: false, introSeen: true, screen: "landing" };
+    case "start":
+      return { ...state, screen: "play" };
+    case "open-act":
+      return { ...state, screen: "play", currentActId: action.actId };
+    case "complete-act":
+      return {
+        ...state,
+        completed: { ...state.completed, [action.actId]: action.score },
+        screen: "result",
+      };
+    case "show-result":
+      return { ...state, screen: "result" };
+    case "open-report":
+      return { ...state, screen: "report" };
+    case "reset":
+      return { ...initialFlow, introSeen: state.introSeen };
+    default:
+      return state;
+  }
+}

@@ -1,0 +1,51 @@
+// Copy sang src/lib/intro-gate.ts. Generic first-visit logic.
+const KEY = "{{slug}}:intro:v1";
+let memorySeen = false;
+
+function storage(): Storage | null {
+  try {
+    return typeof window === "undefined" ? null : window.localStorage;
+  } catch {
+    return null;
+  }
+}
+
+export function hasSeenIntro(): boolean {
+  if (memorySeen) return true;
+  try {
+    return storage()?.getItem(KEY) === "1";
+  } catch {
+    return memorySeen;
+  }
+}
+
+export function markIntroSeen(): void {
+  memorySeen = true;
+  try {
+    storage()?.setItem(KEY, "1");
+  } catch {
+    /* private mode */
+  }
+}
+
+export interface IntroPreference {
+  open: boolean;
+  forced: boolean;
+}
+
+export function readIntroPreference(search = window.location.search): IntroPreference {
+  const value = new URLSearchParams(search).get("intro");
+  if (value === "0") return { open: false, forced: false };
+  if (value === "1") return { open: true, forced: true };
+  return { open: !hasSeenIntro(), forced: false };
+}
+
+export function clearIntroParam(): void {
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("intro");
+    window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+  } catch {
+    /* noop */
+  }
+}

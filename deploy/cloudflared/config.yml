@@ -1,0 +1,25 @@
+# Cloudflare Tunnel → Vite dev server 5173
+#
+# Cách dùng:
+#   1. cloudflared tunnel login
+#   2. cloudflared tunnel create saokim-game
+#   3. cloudflared tunnel route dns saokim-game game.davidtung.net
+#   4. Thay <TUNNEL_ID> bên dưới bằng ID vừa tạo, rồi:
+#        cloudflared tunnel --config deploy/cloudflared/config.yml run
+#
+# Hoặc nếu tạo tunnel trên Cloudflare Dashboard (Zero Trust → Networks → Tunnels):
+#   Public hostname: game.davidtung.net
+#   Service: http://localhost:5173
+#   (khi đó không cần file này, chỉ cần chạy connector bằng token)
+tunnel: <TUNNEL_ID>
+credentials-file: /home/tungphan/.cloudflared/<TUNNEL_ID>.json
+
+ingress:
+  - hostname: game.davidtung.net
+    service: http://127.0.0.1:5173
+    originRequest:
+      # Giữ Host thật để Vite allowedHosts + HMR nhận đúng domain
+      httpHostHeader: game.davidtung.net
+      connectTimeout: 30s
+      noHappyEyeballs: false
+  - service: http_status:404
